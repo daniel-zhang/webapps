@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="demo.css"/>
+</head>
+<body>
+	<h1>CSS Cheatsheet</h1>
+	<hr/>
+	<ul id="root">
+		<li class="layer1">
+			CSS Selectors
+			<ul>
+				<li class="layer2">All Elements Selector: *</li>
+				<li class="layer2">Class Selector: .class</li>
+				<li class="layer2">ID Selector: #id</li>
+				<li class="layer2">
+					Elements Selector
+					<ul>
+						<li class="layer3">div: selects div</li>
+						<li class="layer3">div p: selects all p in div</li>
+						<li class="layer3">div, p: selects both div and p</li>
+						<li class="layer3">div&gt;p: selects p whose parent is div</li>
+						<li class="layer3">div+p: selects p who lives immediately after div </li>
+					</ul>
+				</li>
+				<li class="layer2">Attributes Selector</li>
+			</ul>
+		</li>
+		<li class="layer1">CSS Positioner</li>
+		<li class="layer1">
+			CSS Box Model
+			<ul>
+				<li class="layer2">
+					Border
+					<ul>
+						<li class="layer3">border-style: solid, double, dotted, dashed, groove, ridge, inset, outset</li>
+						<li class="layer3">individual border styles: border-top-style, border-right-style, border-bottom-style, border-left-style</li>
+						<li class="layer3">border-color</li>
+						<li class="layer3">border-width</li>
+						<li class="layer3">shorthand: border: border-width border-style border-color</li>
+					</ul>
+				</li>
+				<li class="layer2">Padding</li>
+				<li class="layer2">
+					Margin
+					<ul>
+						<li class="layer3">individual margins: margin-top, margin-right, margin-bottom, margin-left</li>
+						<li class="layer3">possible values: auto, px, %, inherit</li>
+						
+					</ul>
+				</li>
+			</ul>
+		</li>
+		<li class="layer1">CSS Font</li>
+		<li class="layer1">CSS Transition</li>
+		<li class="layer1">CSS Animation</li>
+		<li class="layer1">CSS Pyseudo Classes</li>
+		<li class="layer1">CSS Display</li>
+	</ul>
+
+<script type="text/javascript">
+
+function handleMouseOver(obj)
+{
+	alert("over " + this.innerHTML);
+}
+
+var listItems = document.getElementsByTagName("li");
+for( var i = 0; i < listItems.length; i++)
+{
+	listItems[i].onmouseover = "handleMouseOver(this)";
+}
+
+</script>
+</body>
+</html>
