@@ -1,0 +1,104 @@
+
+body
+{
+	font: 71%/1.5 Verdana, Sans-Serif;
+	background: #eee;
+}
+
+#write 
+{
+	margin: 0 0 5px;
+	padding: 5px;
+	width: 671px;
+	height: 200px;
+	font: 1em/1.5 Verdana, Sans-Serif;
+	background: #fff;
+	border: 2px solid #000;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+}
+
+#keyboard
+{
+	width:800px;
+	margin-left: 10px;
+	padding: 0;
+	list-style: none;
+}
+
+#keyboard li
+{
+	float:left;
+	/*(shorthand)margin: top right bottom left*/
+	margin: 0 5px 5px 0;
+	width: 40px;
+	height: 40px;
+	line-height: 40px;
+	text-align: center;
+	background: #ddd;
+	/*(shorthand)border: border-width border-style border-color*/
+	border: 2px groove #000;
+
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+}
+
+#keyboard .capslock, #keyboard .tab, #keyboard .left-shift
+{
+	clear: left;
+}
+
+#keyboard .tab, #keyboard .capslock, #keyboard .left-shift, #keyboard .right-shift, #keyboard .return
+{
+	text-align:left;
+	padding-left: 5px;
+}
+
+#keyboard .tab, #keyboard .delete
+{
+	width: 70px;
+}
+
+#keyboard .capslock
+{
+	width: 80px;
+}
+
+#keyboard .return
+{
+	width: 77px;
+}
+
+#keyboard .left-shift
+{
+	width: 95px;
+}
+
+#keyboard .right-shift
+{
+	width: 109px;
+}
+
+#keyboard .space
+{
+	width: 701px;
+}
+
+#keyboard .on
+{
+	display: none;
+}
+
+#keyboard li:hover
+{
+	position: relative;
+	top: 2px;
+	left: 2px;
+	border-color: #ff0000;
+	cursor: pointer;
+}
+
+#keyboard .lastitem
+{
+	margin-right: 0;
+}
