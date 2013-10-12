@@ -344,10 +344,11 @@ function Shape()
 	}
 }
 
-function Ball(positionVector, velocityVector, radius)
+function Ball(positionVector, velocityVector, radius, mass)
 {
 	this.pv = positionVector;
 	this.vv = velocityVector;
+	this.invMass = 1/mass;
 	this.radius = radius;
 
 	this.updatePosition = function(delta)

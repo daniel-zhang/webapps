@@ -18,13 +18,13 @@ var RenderEngine = function ()
 	window.cancelAnimationFrame = cancelAnimationFrame;
 
 	// ctor
-	var ctor = function RenderEngine(elementId, viewport)
+	var ctor = function RenderEngine(parentId, viewport)
 	{
 		var canvas = document.createElement("canvas");
 		canvas.setAttribute("width", viewport.width);
 		canvas.setAttribute("height", viewport.height);
 		canvas.setAttribute("style", "border:2px solid #000000");
-		document.getElementById(elementId).appendChild(canvas);
+		document.getElementById(parentId).appendChild(canvas);
 
 		var context = canvas.getContext("2d");		
 
@@ -41,32 +41,41 @@ var RenderEngine = function ()
 		//
 		// Resource creation
 		//
-		var triangle = new Shape();
+		var polygon = new Shape();
 		
-		triangle.addPoint(700, 300);
-		triangle.addPoint(450, 550);
-		triangle.addPoint(200, 500);
-		triangle.addPoint(100, 300);
-		triangle.addPoint(200, 170);
-		triangle.addPoint(400, 100);
-		triangle.addPoint(650, 150);
-		triangle.addPoint(700, 300);
+		polygon.addPoint(700, 300);
+		polygon.addPoint(450, 550);
+		polygon.addPoint(200, 500);
+		polygon.addPoint(100, 300);
+		polygon.addPoint(200, 170);
+		polygon.addPoint(400, 100);
+		polygon.addPoint(650, 150);
+		polygon.addPoint(700, 300);
 		
-		triangle.connectPoints();
-
-		//var ball = new Ball(new Vector2D(400, 250), new Vector2D(0.14, -0.08));
+		polygon.connectPoints();
 
 		var balls = new Array();
-		for(var i = 0; i < 1000; i++)
+		for(var i = 0; i < 200; i++)
 		{
-			balls[i] = new Ball( new Vector2D(400, 250), new Vector2D(0.2 - Math.random()*0.4, 0.2 - Math.random()*0.4), Math.random()*5 + 2);
-		}
-		/*for (var i = 0; i < 6; ++i)
-		{
-			triangle.addPoint(Math.random()*canvas.width, Math.random()*canvas.height);
-		}*/
+			var rad = Math.random()*Math.PI*2;
+			var vx = Math.sin(rad)*Math.random()*0.1;
+			var vy = Math.cos(rad)*Math.random()*0.1;
 
-		//triangle.connectPointsToShape();
+			var radius = Math.random()*3 + 1;
+			var mass = radius*radius*Math.PI*2;
+			balls[i] = new Ball( 
+				new Vector2D(300+Math.random()*200, 150+Math.random()*200),  // Position 400, 250
+				new Vector2D(vx, vy), // Velocity
+				radius, // Radius
+				mass // Mass
+				); 
+		}
+		/* // An alternative method for resource creation
+		for (var i = 0; i < 6; ++i)
+		{
+			polygon.addPoint(Math.random()*canvas.width, Math.random()*canvas.height);
+		}
+		polygon.connectPointsToShape();*/
 
 		//
 		// Render loop
@@ -86,24 +95,59 @@ var RenderEngine = function ()
 			var delta = timestamp - lastTimeStamp;
 			lastTimeStamp = timestamp;
 
+			// 
 			// Update scene 
+			//
+
+			// Apply gravity
+			/*var gravity = new Vector2D(0, 0.002);
+			for(var i = 0; i < balls.length; i++)
+			{
+				balls[i].vv = balls[i].vv.add(gravity);
+			}*/
+
 			// Detect ball collision
 			for(var j = 0; j < balls.length; j++)
 			{
-				for (var i = 0; i < triangle.lines.length; i++)
+				// Ball[j] collision with ball[k]
+				for(var k = j; k < balls.length; k++)
+				{
+					if(k == j) continue;
+					var collisionNormal = balls[j].pv.minus(balls[k].pv);
+					var relV = balls[j].vv.minus(balls[k].vv);
+					if(
+						collisionNormal.x*collisionNormal.x + collisionNormal.y*collisionNormal.y < (balls[j].radius + balls[k].radius)*(balls[j].radius + balls[k].radius) &&
+						collisionNormal.dotMultiply(relV) < 0
+						)
+					{
+						collisionNormal.normalize();
+						
+						// I = (1+e)*N*(Vr*N) / (1/Ma + 1/Mb)
+						// Va -= I / a.mass
+						// Vb += I / b.mass
+						var impulse = collisionNormal.scalarMultiply(
+							collisionNormal.dotMultiply(relV)*2/(balls[j].invMass + balls[k].invMass)
+							);
+						balls[j].vv = balls[j].vv.minus(impulse.scalarMultiply(balls[j].invMass));
+						balls[k].vv = balls[k].vv.add(impulse.scalarMultiply(balls[k].invMass));
+					}
+				}
+
+				// Ball collision with world
+				for (var i = 0; i < polygon.lines.length; i++)
 				{
 					// Distance from ball to line:
 					// d = P*N + d
-					var	distance = ( (triangle.lines[i].normal.dotMultiply(balls[j].pv)) + (triangle.lines[i].d) ) ;
+					var	distance = ( (polygon.lines[i].normal.dotMultiply(balls[j].pv)) + (polygon.lines[i].d) ) ;
 					
-					var isColliding = balls[j].vv.dotMultiply(triangle.lines[i].normal)
+					var isColliding = balls[j].vv.dotMultiply(polygon.lines[i].normal)
 
 					// Draw a detecting line here
 					/*
 					context.beginPath();
 					context.moveTo(balls[j].pv.x, balls[j].pv.y);
-					var endPointX = balls[j].pv.x - distance * triangle.lines[i].normal.x;
-					var endPointY = balls[j].pv.y - distance * triangle.lines[i].normal.y;
+					var endPointX = balls[j].pv.x - distance * polygon.lines[i].normal.x;
+					var endPointY = balls[j].pv.y - distance * polygon.lines[i].normal.y;
 					context.lineTo(endPointX, endPointY);
 					context.strokeStyle = "green";
 					context.stroke();*/
@@ -112,7 +156,7 @@ var RenderEngine = function ()
 					{
 						// Calculate reflection
 						// v1 = v0 + (1+e)*n*v0
-						balls[j].vv = balls[j].vv.add(triangle.lines[i].normal.scalarMultiply( 1.2 * Math.abs(balls[j].vv.dotMultiply(triangle.lines[i].normal))));
+						balls[j].vv = balls[j].vv.add(polygon.lines[i].normal.scalarMultiply( 2 * Math.abs(balls[j].vv.dotMultiply(polygon.lines[i].normal))));
 					}
 				}
 				// Update ball position according to velocity
@@ -120,7 +164,7 @@ var RenderEngine = function ()
 			}
 			
 			// Render scene	
-			triangle.drawSelf(context);
+			polygon.drawSelf(context);
 			for(var i = 0; i < balls.length; i++)
 				balls[i].drawSelf(context);
 
@@ -168,7 +212,7 @@ var RenderEngine = function ()
 	return ctor;
 }();
 
-re = new RenderEngine("render_engine", new Viewport(800, 600, "LightSteelBlue"));
+re = new RenderEngine("canvas_parent", new Viewport(800, 600, "LightSteelBlue"));
 
 function startAnimation()
 {
@@ -186,4 +230,5 @@ function stopAnimation()
 		re.stop();		
 	else
 		console.log("Engine already stopped. Nothing is done.")
+					
 }
