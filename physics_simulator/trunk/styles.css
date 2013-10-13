@@ -1,6 +1,6 @@
 body
 {
-	font-family:Verdana, sans-serif;	
+	font: 71%/1.5 Verdana, sans-serif;	
 }
 
 .renderContainer
@@ -17,8 +17,7 @@ body
 	-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
 	border:solid #f00;
-	margin-left: 20px;
-	
+	margin-left: 5px;	
 }
 
 canvas
@@ -28,4 +27,9 @@ canvas
 	border:solid #f00;
 	-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
+}
+
+#dummyEnd
+{
+	clear: left;
 }

@@ -28,7 +28,7 @@ function ConfigPanelUI(parent_, viewport_)
 
 	// Callback handler when canvas size is changed
 	// Also send a customized event to indicate this change
-	this.onSizeChanged = function(key, that)
+	var onSizeChanged = function(key, that)
 	{
 		if(key in that.canvasSize)
 		{
@@ -44,13 +44,18 @@ function ConfigPanelUI(parent_, viewport_)
 				e.width = width;
 				e.height = height;
 
+				console.log("Config panel sent out event: " + e.type);
 				document.dispatchEvent(e);
-				console.log("CustomEvent dispatched...............");
-
-
 			}
 		}
 	}
+
+    // Callback handler when button is clicked
+    var onButtonClicked = function(id)
+    {
+    	console.log("Config panel sent out event: " + id);
+        document.dispatchEvent(new CustomEvent(id));
+    }
 
 	this.init = function()
 	{
@@ -65,7 +70,13 @@ function ConfigPanelUI(parent_, viewport_)
 		this.addCheckBox("showDectectingLine", "Detecting Line", displaySetttings);
 		
 		displaySetttings.appendChild(document.createElement("hr"));
-		this.addDropDownList("Canvas Size: ", this.canvasSize, displaySetttings, this.onSizeChanged);
+		this.addDropDownList("Canvas Size: ", this.canvasSize, displaySetttings, onSizeChanged);
+
+        this.addButton("Start Engine", "startEngine", this.panelElement, onButtonClicked);
+        this.addButton("Stop Engine", "stopEngine", this.panelElement, onButtonClicked);
+        this.addButton("Pause Engine", "pauseEngine", this.panelElement, onButtonClicked);
+
+        console.log("Config Panel init done!");
 	}
 
 	
@@ -120,9 +131,9 @@ function ConfigPanelUI(parent_, viewport_)
 		console.log(txt);
 	}
 
-	this.addDropDownList = function(name, items, parent, itemOnClickHandler)
+	this.addDropDownList = function(alias, items, parent, itemOnClickHandler)
 	{
-		parent.appendChild(document.createTextNode(name));
+		parent.appendChild(document.createTextNode(alias));
 		var select = document.createElement("select");
 		parent.appendChild(select);
 
@@ -145,6 +156,22 @@ function ConfigPanelUI(parent_, viewport_)
 		parent.appendChild(document.createElement("br"));
 	}
 
+    this.addButton = function(alias, id, parent, onClickHandler)
+    {
+        var button = document.createElement("button");
+        parent.appendChild(button);
+        button.id = id;
+        button.type = 'button';
+        button.innerHTML = alias;
+
+        var that = this;
+        button.onclick = function()
+        {
+            onClickHandler(button.id, that);
+        }
+        parent.appendChild(document.createElement("br"));
+    }
+
 	this.init();
 }
 
@@ -160,20 +187,14 @@ function CanvasUI(parent_, viewport_)
 		this.parent.appendChild(this.canvasElement);
 		
 		this.addjustSize(this.viewport.width, this.viewport.height);
-		var that = this;
-		document.addEventListener(
-			'canvasSizeChange',
-			function(e)
-			{
-				console.log("Canvas received event:" + e + " " + e.width + " " + e.height);
-				that.addjustSize(e.width, e.height);
-			},
-			false
-			);
+
+		console.log("Canvas UI init done!");
 	}
 
 	this.addjustSize = function(width, height)
 	{
+		this.viewport.width = width;
+		this.viewport.height = height;
 		this.canvasElement.setAttribute("width", width);
 		this.canvasElement.setAttribute("height", height);
 	}
