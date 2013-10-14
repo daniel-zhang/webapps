@@ -2,6 +2,13 @@ function Position(x, y)
 {
 	this.x = x;
 	this.y = y;
+	this.equalOrigin = function()
+	{
+		if(this.x == 0 && this.y == 0)
+			return true;
+		else
+			return false;
+	}
 	this.equal = function(that)
 	{
 		if(this.x == that.x && this.y == that.y)
@@ -74,3 +81,4 @@ function Vector2D(x, y)
 		this.y = this.y / mod;
 	}
 }
+
