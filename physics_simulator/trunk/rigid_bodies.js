@@ -48,13 +48,22 @@ Circle.prototype.generateContact = function(anotherRb)
 	var contact;
 	if(anotherRb.type == "Circle")
 	{
-		var relNormal = this.position.minus(anotherRb.position);
-		var dist = relNormal.mod() - (this.radius + anotherRb.radius);
-		contact = new Contact(relNormal, dist);
+		var contactNormal = this.position.minus(anotherRb.position);
+		// Minimize sqrt if possible
+		var mod = contactNormal.mod();
+		var dist = mod - (this.radius + anotherRb.radius);
+		// Normalize contactNormal
+		contactNormal = contactNormal.scalarDivide(mod);
+
+		contact = new Contact(contactNormal, dist, this, anotherRb);
 	}
 	else if(anotherRb.type == "Plane")
 	{
+		// circle-plane contact's normal is the plane's normal
+		var contactNormal = anotherRb.normal;
+		var dist = this.position.dotMultiply(anotherRb.normal) + anotherRb.distanceToOrigin - this.radius;
 
+		contact = new Contact(contactNormal, dist, this, anotherRb);
 	}
 	else
 	{
@@ -94,7 +103,7 @@ function Plane(position, velocity, invMass, startPos, endPos)
 	{
 		this.normal.x = 0 - this.vector.y;
 		this.normal.y = this.vector.x;
-		// normal is already normalized
+		// Because this.vector is normalized, so is this.normal
 	}
 	this.calculateDistanceToOrigin = function()
 	{
@@ -113,16 +122,34 @@ function Plane(position, velocity, invMass, startPos, endPos)
 Plane.prototype = Object.create(RigidBody.prototype);
 Plane.prototype.generateContact = function(anotherRb)
 {
-
+	var contact;
+	if(anotherRb.type == "Circle")
+	{
+		var dist = anotherRb.position.dotMultiply(this.normal) + this.distanceToOrigin - anotherRb.radius;
+		// plane-circle contact's normal is the plane's normal*(-1)
+		var contactNormal = this.normal.scalarMultiply(-1);
+		contact = new Contact(contactNormal, dist, this, anotherRb);
+	}
+	else if(anotherRb.type == "Plane")
+	{
+		//TODO: add plane-plane-contact
+	}
+	else
+	{
+		//TODO: throw exception here
+	}
+	return contact;
 }
 
 //
 // Contact
 //
-function Contact(normal, distance)
+function Contact(normal, distance, rbA, rbB)
 {
 	this.normal = normal;
 	this.distance = distance;
+	this.rbA = rbA;
+	this.rbB = rbB;
 }
 
 //
@@ -130,14 +157,62 @@ function Contact(normal, distance)
 //
 function PhysicsEngine()
 {
-	this.objQueue = new Array();
-	this.init = function()
+	// For html canvas, axis y is facing "downward".
+	this.gravity = 0.0002;
+	this.restitution = 0.9;
+
+	this.rigidBodies = new Array();
+	this.contacts = new Array();
+
+	this.populate = function()
 	{
 
 	}
 
 	this.update = function()
 	{
+		// Apply gravity
+
+		// Collision detection
+		// Empty old contacts
+		this.contacts.length = 0;
+		for(var i = 0; i < this.rigidBodies.length - 1; i++)
+		{
+			for(var j = i + 1; j < this.rigidBodies.length; j++)
+			{
+				// Do not detect collision between two invMass==0 rbs, i.e. two planes.
+				if( this.rigidBodies[i].invMass > 0 || this.rigidBodies[j].invMass > 0)
+				{
+					this.contacts.push(this.rigidBodies[i].generateContact(this.rigidBodies[j]));
+				}
+			}
+		}
+
+		// Solve contacts
+		for(var i = 0; i < this.contacts.length; i++)
+		{
+			var contact = this.contacts[i];
+			if(contact.distance <= 0)
+			{
+				var rbA = contact.rbA;
+				var rbB = contact.rbB;
+				// Keep it consistant with contact normal direction: relative velocity is always A.v - B.v
+				var relV = rbA.velocity.minus(rbB.velocity);
+
+				if(relV.dotMultiply(contact.normal) < 0)
+				{
+					// impluse = (1+e)*(Vr_dot_N)*N
+					var impulse = contact.normal.scalarMultiply( (1 + this.restitution) * relV.dotMultiply(contact.normal) / (rbA.invMass + rbB.invMass) );
+					rbA.velocity = rbA.velocity.minus(impulse.scalarMultiply(rbA.invMass));
+					rbB.velocity = rbB.velocity.add(impulse.scalarMultiply(rbB.invMass));
+				}
+			}
+		}
+
+		// TODO: constraint solver
+
+		// Integration...implicit euler integration
+
 
 	}
 }
