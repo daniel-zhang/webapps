@@ -21,11 +21,8 @@ function RigidBody(position, velocity, invMass)
 	this.position = position;
 	this.velocity = velocity;
 	this.invMass = invMass;
+	this.type = "RigidBody";
 }
-
-RigidBody.prototype.type = "RigidBody";
-
-// A virtual method
 RigidBody.prototype.generateContact = function(anotherRb){}
 
 RigidBody.prototype.integrate = function(delta)
@@ -158,7 +155,7 @@ function Contact(normal, distance, rbA, rbB)
 function PhysicsEngine()
 {
 	// For html canvas, axis y is facing "downward".
-	this.gravity = 0.0002;
+	this.gravity = new Vector2D(0, 0.0002);
 	this.restitution = 0.9;
 
 	this.rigidBodies = new Array();
@@ -166,16 +163,26 @@ function PhysicsEngine()
 
 	this.populate = function()
 	{
-
+		this.rigidBodies.push(new Circle(new Vector2D(150, 150), new Vector2D(0.1, 0.1), 1/10, 5));
+		console.log("Physim: rbs len:" + this.rigidBodies.length);
 	}
 
-	this.update = function()
+	this.update = function(delta)
 	{
 		// Apply gravity
+		for(var i = 0; i < this.rigidBodies.length; i++)
+		{
+			if(this.rigidBodies[i].invMass > 0)
+			{
+				this.rigidBodies[i].velocity.add(this.gravity);
+			}
+		}
+
+		// Empty contacts from previous frame
+		// TODO: cache contacts to save cpu circles...
+		this.contacts.length = 0;
 
 		// Collision detection
-		// Empty old contacts
-		this.contacts.length = 0;
 		for(var i = 0; i < this.rigidBodies.length - 1; i++)
 		{
 			for(var j = i + 1; j < this.rigidBodies.length; j++)
@@ -212,7 +219,11 @@ function PhysicsEngine()
 		// TODO: constraint solver
 
 		// Integration...implicit euler integration
-
+		for(var i = 0; i < this.rigidBodies.length; i++)
+		{
+			if(this.rigidBodies[i].invMass > 0)
+				this.rigidBodies[i].integrate(delta);
+		}
 
 	}
 }

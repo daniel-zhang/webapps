@@ -13,6 +13,9 @@ function RenderEngine(parentId, viewport)
 
 	var looper = new Looper();
 
+	this.physim = new PhysicsEngine();
+	this.physim.populate();
+
 	this.initUI = function(viewport)
 	{
 		// Create the container element
@@ -117,8 +120,22 @@ function RenderEngine(parentId, viewport)
 		var delta = timestamp - looper.previousTimestamp;
 		looper.previousTimestamp = timestamp;
 
-		// Where the real meat begins
+		// Step physics simulator
+		that.physim.update(delta);
+
+		// Render
 		that.clearBg();
+		for(var i = 0; i < that.physim.rigidBodies.length; i++)
+		{
+			var rb = that.physim.rigidBodies[i];
+			if(rb.type == "RigidBody")
+			{
+				context.beginPath();
+				context.arc(rb.position.x, rb.position.y, rb.radius, 0, 2 * Math.PI);
+				context.fillStyle = "yellow";
+				context.fill();
+			}
+		}
 
 		// Draw fps info
 		var fpsTxt = looper.fps + " frames per second";
