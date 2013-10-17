@@ -7,6 +7,9 @@ function RenderEngine(parentId, viewport)
 	this.canvasUI = null;
 	this.configPanelUI = null;
 
+	this.drawFPS = false;
+	this.drawNormal = false;
+
 	var requestAnimationFrame = null;
 	var cancelAnimationFrame = null;
 	var context = null;
@@ -128,12 +131,29 @@ function RenderEngine(parentId, viewport)
 		for(var i = 0; i < that.physim.rigidBodies.length; i++)
 		{
 			var rb = that.physim.rigidBodies[i];
-			if(rb.type == "RigidBody")
+			if(rb.type == rb.TYPE_CIRCLE)
 			{
 				context.beginPath();
 				context.arc(rb.position.x, rb.position.y, rb.radius, 0, 2 * Math.PI);
 				context.fillStyle = "yellow";
 				context.fill();
+			}
+			else if (rb.type == rb.TYPE_PLANE)
+			{
+				context.beginPath();
+				context.moveTo(rb.startPos.x, rb.startPos.y);	
+				context.lineTo(rb.endPos.x, rb.endPos.y);
+				context.strokeStyle = "green";
+				context.stroke();
+
+				// Draw plane normal
+				context.beginPath();
+				var midPoint = rb.startPos.add(rb.endPos).scalarDivide(2);
+				var normalLen = 50;
+				context.moveTo(midPoint.x, midPoint.y);
+				context.lineTo(midPoint.x + normalLen*rb.normal.x, midPoint.y + normalLen*rb.normal.y);
+				context.strokeStyle = "red";
+				context.stroke();
 			}
 		}
 

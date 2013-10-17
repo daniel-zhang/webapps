@@ -35,9 +35,36 @@ function Vector2D(x, y)
 	this.x = x;
 	this.y = y;
 }
+
+Vector2D.prototype.makeZero = function()
+{
+	this.x = 0;
+	this.y = 0;	
+}
+
+Vector2D.prototype.duplicate = function()
+{
+	return new Vector2D(this.x, this.y);
+}
+
+Vector2D.prototype.equal = function(that)
+{
+	if(this.x == that.x && this.y == that.y)
+		return true;
+	else
+		return false;
+}
+
 Vector2D.prototype.add = function(that)
 {
 	return new Vector2D(this.x + that.x, this.y + that.y);
+}
+
+Vector2D.prototype.addSelf = function(that)
+{
+	this.x += that.x;
+	this.y += that.y;
+	return this;
 }
 
 Vector2D.prototype.minus = function(that)
@@ -45,14 +72,35 @@ Vector2D.prototype.minus = function(that)
 	return new Vector2D(this.x - that.x, this.y - that.y);
 }
 
+Vector2D.prototype.minusSelf = function(that)
+{
+	this.x -= that.x;
+	this.y -= that.y;
+	return this;
+}
+
 Vector2D.prototype.scalarMultiply = function(scalar)
 {
 	return new Vector2D(this.x * scalar, this.y * scalar);
 }
 
+Vector2D.prototype.scalarMulSelf = function(scalar)
+{
+	this.x = this.x * scalar;
+	this.y = this.y * scalar;
+	return this;
+}
+
 Vector2D.prototype.scalarDivide = function(scalar)
 {
 	return new Vector2D(this.x / scalar, this.y / scalar);
+}
+
+Vector2D.prototype.scalarDivSelf = function(scalar)
+{
+	this.x = this.x / scalar;
+	this.y = this.y / scalar;
+	return this;
 }
 
 Vector2D.prototype.dotMultiply = function(that)
