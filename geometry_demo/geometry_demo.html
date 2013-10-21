@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Geometry Demo</title>
+  <link rel="stylesheet" type="text/css" href="style.css"/>
+</head>
+
+<body class="root" id="root1">
+	<div class="render_viewport">
+		<canvas id="render_viewport_1" width="800px" height="600px"></canvas>
+	</div>
+
+	<div class="fix_menu" id="fix_menu1">
+		<div class="menu_item clickable" id="move_mode">
+			<label for="move_mode">Move</label>
+		</div>
+
+		<div class="menu_item clickable" id="rotate_mode">
+			<label for="rotate_mode">Rotate</label>
+		</div>
+
+		<div class="menu_item clickable" id="draw_line_mode" default="true">
+			<label for="draw_line_mode">Line</label>
+		</div>
+
+		<div class="menu_item clickable" id="draw_poly_mode">
+			<label for="draw_poly_mode">Polygon</label>
+		</div>
+
+		<div class="menu_deli"></div>
+
+		<div class="menu_item"> 
+			<label htmlFor="pen_style_options">Pen Styles:</label> 
+			<select id="pen_style_options">
+				<option value="pen_style_dot">dot</option>
+				<option value="pen_style_line">line</option>
+				<option value="pen_style_bezier">bezier</option>
+			</select>
+		</div>
+	</div>
+
+	<textarea class="log_window" id="log_window1"></textarea>
+
+	<script type="text/javascript" src="ui.js"></script>
+	<script type="text/javascript" src="geometry_demo.js"></script>
+</body>
+</html>

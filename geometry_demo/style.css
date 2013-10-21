@@ -1,0 +1,87 @@
+.root
+{
+	position: relative;
+	background-color:#7ba7c9;
+	float:left;
+	font-family:Verdana;
+}
+.log_window
+{
+	position: fixed;
+	top:80px;
+	left:50px;
+	font-family:Verdana;
+	color: #369;
+	background-color: #def;
+	overflow: hidden;
+}
+
+.fix_menu
+{
+	position:fixed;
+	left:50px;
+	top:5px;
+	right:50px;
+	border:2px;
+	height:50px;
+
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-bottom: 0px;
+
+	background-color: #def;
+	border-radius: 5px;
+}
+
+.menu_item
+{
+	position: relative;
+	color: #def;
+	background-color: #369;
+	border-radius: 5px;
+
+	margin-top: 10px;
+	margin-left: 5px;
+
+	padding-top: 5px;
+	padding-left: 5px;
+	padding-right: 9px;
+
+	height: 25px;
+	float:left;
+}
+
+.menu_item:hover
+{
+	background-color: #ff9640;
+}
+.clickable:active
+{
+	position: relative;
+	top: 3px;
+}
+.menu_deli
+{
+	margin-top: 0px;
+	margin-left: 15px;
+	margin-right: 10px;
+	margin-bottom: 0px;
+	padding: 0px;
+	float: left;
+	position: relative;
+	width: 0px;
+	height: 46px;
+}
+
+.render_viewport
+{
+	top:80px;
+	left:400px;
+	position:fixed;	
+}
+
+#render_viewport_1
+{
+	position:inherit;
+	border:3px dashed #def;
+}

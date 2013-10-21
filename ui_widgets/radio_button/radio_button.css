@@ -1,0 +1,31 @@
+.layout
+{
+	float: left;
+	margin-left: 30px;
+}
+
+.radio_button
+{
+	position: relative;
+	border: 2px solid;
+
+	background-color: green;
+
+	width: 200px;
+
+	margin-left: 10px;
+	margin-top: 10px;
+	margin-right: 10px;
+	margin-bottom: 10px;
+
+	cursor: pointer;
+}
+.small_button
+{
+	width: 100px;
+}
+
+.radio_button_group
+{
+	border: 2px solid;
+}

@@ -1,0 +1,24 @@
+.ui_layout
+{
+	float: left;
+	margin-left: 30px;
+	border:2px solid;
+}
+.slider_bar
+{
+
+	position: relative;
+	border: 2px solid;
+
+	background-color: green;
+
+	width: 200px;
+	height: 30px;
+
+	margin-left: 10px;
+	margin-top: 10px;
+	margin-right: 10px;
+	margin-bottom: 10px;
+
+	cursor: pointer;
+}

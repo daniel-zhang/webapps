@@ -1,0 +1,35 @@
+body
+{
+	font: 71%/1.5 Verdana, sans-serif;	
+}
+
+.renderContainer
+{
+	float:left;
+	background-color: #ddd;
+	border:solid #f00;
+}
+
+.configPanel
+{
+	float:left;
+
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border:solid #f00;
+	margin-left: 5px;	
+}
+
+canvas
+{
+	float:left;
+
+	border:solid #f00;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+}
+
+#dummyEnd
+{
+	clear: left;
+}
