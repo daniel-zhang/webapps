@@ -1,0 +1,132 @@
+<!DOCTYPE>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+<title>Physics Simulator/Trunk</title>
+
+<link rel="stylesheet" type="text/css" href="lib/themes/base/jquery.ui.all.css">
+
+<script type="text/javascript" src="lib/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="lib/ui/jquery.ui.core.js"></script>
+<script type="text/javascript" src="lib/ui/jquery.ui.widget.js"></script>
+<script type="text/javascript" src="lib/ui/jquery.ui.accordion.js"></script>
+<script type="text/javascript" src="lib/ui/jquery.ui.button.js"></script>
+<script type="text/javascript" src="lib/ui/jquery.ui.mouse.js"></script>
+<script type="text/javascript" src="lib/ui/jquery.ui.slider.js"></script>
+
+<script src="src/ui_v2.js"></script>
+
+<link rel="stylesheet" type="text/css" href="css/demo.css">
+<link rel="stylesheet" type="text/css" href="css/styles.css">
+<style>
+#toolbar {
+	position: fixed;
+	top:10px;
+	left:200px;
+	padding: 4px;
+	display: inline-block;
+}
+#accordion
+{
+	position: fixed;
+	top:130px;
+	left:20px;
+	width: 260px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div id="accordion">
+	<h3>Display Settings</h3>
+	<div>
+		<input type="checkbox" id="show_noraml"><label for="show_noraml">Normal</label><br/>
+		<input type="checkbox" id="show_fps"><label for="show_fps">FPS</label><br/>
+		<input type="checkbox" id="show_detecting_line"><label for="show_detecting_line">Detecting Line</label><br/>
+		<input type="checkbox" id="show_contact"><label for="show_contact">Contact Point</label><br/>
+		<input type="checkbox" id="show_contact_normal"><label for="show_contact_normal">Contact Normal</label><br/>
+		<input type="checkbox" id="show_md"><label for="show_md">Minkowski Difference</label><br/>
+	</div>
+	<h3>World Settings</h3>
+	<div>
+		<div style="display:inline-block;">
+			<label for="gravity">Gravity:</label>
+			<input type="text" id="gravity"/> 
+			<div id="gravity_slider"></div>
+		</div>
+		<div style="display:inline-block;">
+			<label for="restituition">Restituition:</label>
+			<input type="text" id="restituition"/> 
+			<div id="restituition_slider"></div>
+		</div>
+	</div>
+	<h3>Contact Solver Settings</h3>
+	<div>
+		<p>discrete sovler</p>	
+		<p>speculative sovler</p>	
+		<p>TOI sovler</p>	
+		<p>sovler iterations</p>	
+	</div>
+	<h3>Performance Monitor</h3>
+	<div>
+		<p>Collision detection CPU time</p>
+		<p>Contact Solver CPU time</p>
+		<p>Constraint Solver CPU time</p>
+	</div>
+</div>
+<div id="toolbar" class="ui-widget-header ui-corner-all">
+	<button id="start">start!</button>
+	<button id="pause">pause!</button>
+	<button id="reload">reload</button>
+
+	<span id="separator" style="margin-left: 10px; margin-right:10px"></span>
+
+	<span id="modes">
+		<input type="radio" id="move_mode" name="mode" checked="checked" /><label for="move_mode">Move</label>
+		<input type="radio" id="rotate_mode" name="mode" /><label for="rotate_mode">Rotate</label>
+		<input type="radio" id="draw_line" name="mode" /><label for="draw_line">Line</label>
+		<input type="radio" id="draw_polygon" name="mode" /><label for="draw_polygon">Polygon</label>
+	</span>
+
+	<label for="pen_styles">Pen Styles:</label>
+	<select id="pen_styles">
+		<option id="dot">dot</option>
+		<option id="line">line</option>
+		<option id="bezier">bezier</option>
+	</select>
+
+	<label for="canvas_size">Canvas Size</label>
+	<select id="canvas_size">
+		<option id="size_800_600">800x600</option>
+		<option id="size_400_300">400x300</option>
+		<option id="size_1024_768">1024x768</option>
+	</select>
+
+	<label for="contact_solver">Contact Solver</label>
+	<select id="contact_solver">
+		<option id="discrete">Discrete</option>
+		<option id="speculative">Speculative</option>
+	</select>
+
+	<div style="display:inline-block;">
+		<label for="iteration">Sovler Iteration:</label>
+		<input type="text" id="iteration"/> 
+		<div id="slider" style="width:100px;"></div>
+	</div>
+
+</div>
+
+<div id="simulator_parent"></div>
+
+<script type="text/javascript" src="src/math.js"></script>
+<script type="text/javascript" src="src/rigid_bodies.js"></script>
+<script type="text/javascript" src="src/ui.js"></script>
+<script type="text/javascript" src="src/render_resources.js"></script>
+<script type="text/javascript" src="src/render.js"></script>
+
+</body>
+
+</html>
