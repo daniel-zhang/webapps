@@ -129,6 +129,19 @@ Vector2D.prototype.normalize = function()
 	var mod = this.mod();
 	this.x = this.x / mod;
 	this.y = this.y / mod;
+	return this;
 }
 
+Vector2D.prototype.turn90 = function()
+{
+	return new Vector2D(0 - this.y, this.x);
+}
 
+Vector2D.prototype.rotate = function(theta)
+{
+	var tmpX = this.x * Math.cos(theta) - this.y * Math.sin(theta);
+	var tmpY = this.x * Math.sin(theta) + this.y * Math.cos(theta);	
+	this.x = tmpX;
+	this.y = tmpY;
+	return this;
+}

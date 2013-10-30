@@ -6,18 +6,30 @@ function RenderEngine(parentId, viewport)
 	this.parentId = parentId;
 	this.canvasUI = null;
 	this.configPanelUI = null;
-
+	this.inputHandler = null;
 	this.drawFPS = false;
 	this.drawNormal = false;
-
 	var requestAnimationFrame = null;
 	var cancelAnimationFrame = null;
 	var context = null;
+	var looper = null;
+	this.physim = null;
 
-	var looper = new Looper();
+	this.initAll = function()
+	{
+		this.initUI(viewport);
+		this.initAnimator();
+		this.clearBg();
 
-	this.physim = new PhysicsEngine();
-	this.physim.populate();
+		this.registerEventListeners();
+
+		this.physim = new PhysicsEngine();
+		this.physim.populate();
+
+		looper = new Looper();
+
+		this.inputHandler = new InputHandler(this.canvasUI.canvasElement, this.physim.rigidBodies);
+	}
 
 	this.initUI = function(viewport)
 	{
@@ -104,13 +116,7 @@ function RenderEngine(parentId, viewport)
 		context.restore();
 	};
 	
-	this.initAll = function()
-	{
-		this.initUI(viewport);
-		this.initAnimator();
-		this.registerEventListeners();
-		this.clearBg();
-	}
+
 
 	var that = this;
 	var step = function(timestamp)
@@ -123,37 +129,36 @@ function RenderEngine(parentId, viewport)
 		var delta = timestamp - looper.previousTimestamp;
 		looper.previousTimestamp = timestamp;
 
+		that.clearBg();
+
+
 		// Step physics simulator
 		that.physim.update(delta);
 
+
 		// Render
-		that.clearBg();
 		for(var i = 0; i < that.physim.rigidBodies.length; i++)
 		{
 			var rb = that.physim.rigidBodies[i];
-			if(rb.type == rb.TYPE_CIRCLE)
-			{
-				context.beginPath();
-				context.arc(rb.position.x, rb.position.y, rb.radius, 0, 2 * Math.PI);
-				context.fillStyle = "yellow";
-				context.fill();
-			}
-			else if (rb.type == rb.TYPE_PLANE)
-			{
-				context.beginPath();
-				context.moveTo(rb.startPos.x, rb.startPos.y);	
-				context.lineTo(rb.endPos.x, rb.endPos.y);
-				context.strokeStyle = "green";
-				context.stroke();
+			rb.draw(context);
+		}
 
-				// Draw plane normal
+		// Draw contacts
+		for(var i = 0; i < that.physim.contacts.length; i++)
+		{
+			var pointA = that.physim.contacts[i].contactPointA;
+			var pointB = that.physim.contacts[i].contactPointB;
+			if(pointA != null && pointB != null && pointA.minus(pointB).mod() < 0.2)
+			{
 				context.beginPath();
-				var midPoint = rb.startPos.add(rb.endPos).scalarDivide(2);
-				var normalLen = 50;
-				context.moveTo(midPoint.x, midPoint.y);
-				context.lineTo(midPoint.x + normalLen*rb.normal.x, midPoint.y + normalLen*rb.normal.y);
-				context.strokeStyle = "red";
-				context.stroke();
+				context.arc(pointA.x, pointA.y, 3, 0, 2*Math.PI);
+				context.fillStyle = "#483D8B";
+				context.fill();
+
+				context.beginPath();
+				context.arc(pointB.x, pointB.y, 3, 0, 2*Math.PI);
+				context.fillStyle = "#483D8B";
+				context.fill();
 			}
 		}
 
@@ -185,7 +190,6 @@ function RenderEngine(parentId, viewport)
 	}
 
 	this.initAll();
-
 }
 
 var renderEngine = new RenderEngine("simulator_parent", new Viewport(800, 600, "#ddd"));
