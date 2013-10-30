@@ -98,10 +98,13 @@ function RenderEngine(parentId, viewport)
             false
             );
         document.addEventListener(
-            'pauseEngine',
+            event_restart_engine,
             function(e)
             {
             	console.log("Render Engine received event: " + e['type']);
+            	document.dispatchEvent(new CustomEvent(event_pause_engine));
+            	that.initAll();
+            	document.dispatchEvent(new CustomEvent(event_start_engine));
             },
             false
             );
@@ -192,4 +195,4 @@ function RenderEngine(parentId, viewport)
 	this.initAll();
 }
 
-var renderEngine = new RenderEngine("simulator_parent", new Viewport(800, 600, "#ddd"));
+var renderEngine = new RenderEngine("simulator_parent", new Viewport(1280, 720, "#ddd"));

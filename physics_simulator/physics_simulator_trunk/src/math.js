@@ -42,6 +42,13 @@ Vector2D.prototype.makeZero = function()
 	this.y = 0;	
 }
 
+Vector2D.prototype.negate = function()
+{
+	this.x = 0 - this.x;
+	this.y = 0 - this.y;
+	return this;
+}
+
 Vector2D.prototype.duplicate = function()
 {
 	return new Vector2D(this.x, this.y);
@@ -122,6 +129,11 @@ Vector2D.prototype.crossMultiply = function(that)
 Vector2D.prototype.mod = function()
 {
 	return Math.sqrt(this.x * this.x + this.y * this.y);
+}
+
+Vector2D.prototype.squareMod = function()
+{
+	return (this.x * this.x + this.y * this.y);
 }
 
 Vector2D.prototype.normalize = function()

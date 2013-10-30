@@ -9,9 +9,9 @@ function ConfigPanelUI(parent_, viewport_)
 	this.canvasSize = 
 	{
 		'400 x 300' : {'width':400, 'height':300, 'pre_selected':false},
-		'800 x 600' : {'width':800, 'height':600, 'pre_selected':true},
+		'800 x 600' : {'width':800, 'height':600, 'pre_selected':false},
 		"1024 x 768" : {'width':1024, 'height':768, 'pre_selected':false},
-		"1280 x 720" : {'width':1280, 'height':720, 'pre_selected':false},
+		"1280 x 720" : {'width':1280, 'height':720, 'pre_selected':true},
 	};
 
 	this.queryCheckBoxStatus = function(itemId_)

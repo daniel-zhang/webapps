@@ -38,10 +38,11 @@ Circle.prototype.generateContact = function(anotherRb)
 
 		contact = new Contact(contactNormal, dist, this, anotherRb, contactPA, contactPB);
 	}
-	else
+	else if(anotherRb.type == this.TYPE_BOX)
 	{
-		contact = new Contact();
-		// TODO: throw exception here
+		contact = anotherRb.generateContact(this);
+		// return new Contact(contact.normal.negate(), contact.distance, anotherRb, this, contact.contactPointB, contact.contactPointA);
+		return contact.flip();
 	}
 	return contact;
 }
@@ -68,11 +69,12 @@ Circle.prototype.draw = function(ctx)
 
 	// Draw pointer
 	ctx.beginPath();
-	ctx.moveTo(this.position.x, this.position.y);
+	var begin = this.position.add(this.position.minus(this.pointer));
+	ctx.moveTo(begin.x, begin.y);
 	ctx.lineTo(this.pointer.x, this.pointer.y);
 	var tmp = ctx.lineWidth;
-	ctx.lineWidth = 4;
-	ctx.strokeStyle = "#CD5555";
+	ctx.lineWidth = 8;
+	ctx.strokeStyle = "#104E8B";
 	ctx.stroke();
 	ctx.lineWidth = tmp;
 }

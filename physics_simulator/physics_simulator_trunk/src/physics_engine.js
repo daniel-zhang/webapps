@@ -10,11 +10,24 @@ function Contact(normal, distance, rbA, rbB, contactPointA, contactPointB)
 	this.contactPointA = contactPointA || null;
 	this.contactPointB = contactPointB || null;
 }
+Contact.prototype.flip = function()
+{
+	this.normal.negate();
+	var tmp = this.rbA;
+	this.rbA = this.rbB;
+	this.rbB = tmp;
+ 
+	tmp = this.contactPointA;
+	this.contactPointA = this.contactPointB;
+	this.contactPointB = tmp;
+	
+	return this;
+}
 
 //
 // Obj creator
 //
-function createObjs(rbContainer)
+function createScene(rbContainer)
 {
 	// function Plane(position, velocity, angVelo, invMass, color, startPos, endPos)
 	rbContainer.push(new Plane(new Vector2D(0, 0), new Vector2D(0, 0), 0, 0, "#8B8378", new Vector2D(100, 450), new Vector2D(100, 100) ));
@@ -22,7 +35,7 @@ function createObjs(rbContainer)
 	rbContainer.push(new Plane(new Vector2D(0, 0), new Vector2D(0, 0), 0, 0, "#8B8378", new Vector2D(1200, 100), new Vector2D(600, 500) ));
 
 	// function Box(position, velocity, angVelo, invMass, color, halfWidth, halfHeight, rotation)
-	rbContainer.push(new Box(new Vector2D(300, 300), new Vector2D(0, 0), 0, 0, "#A52A2A", 50, 70, 0));
+	rbContainer.push(new Box(new Vector2D(300, 300), new Vector2D(0, 0), 0, 0, "#A52A2A", 50, 70, 0.2));
 
 	for(var i = 0; i < 10; i++)
 	{
@@ -37,13 +50,33 @@ function createObjs(rbContainer)
 	}
 }
 
+function createScene2(rbContainer)
+{
+	rbContainer.push(new Box(new Vector2D(100, 380), new Vector2D(0, 0), 0, 0, "#00008B", 15, 200, -0.13));
+	rbContainer.push(new Box(new Vector2D(420, 600), new Vector2D(0, 0), 0, 0, "#8B2323", 300, 15, 0.1));
+	rbContainer.push(new Box(new Vector2D(800, 550), new Vector2D(0, 0), 0, 0, "#8B7355", 15, 200, 1.27));
+	rbContainer.push(new Box(new Vector2D(1000, 350), new Vector2D(0, 0), 0, 0, "#53868B", 15, 200, 0.57));
+
+	rbContainer.push(new Box(new Vector2D(200, 350), new Vector2D(0, 0), 0, 1/4, "#53868B", 35, 20, 0.57));
+	rbContainer.push(new Box(new Vector2D(280, 350), new Vector2D(0, 0), 0, 1/4, "#53868B", 25, 40, 0.57));
+
+	for(var i = 0; i < 10; i++)
+	{
+		var posX = 150 + i * 80;
+		var posY1 = 150 + i * 10;
+		rbContainer.push(new Circle(new Vector2D(posX, posY1), new Vector2D(0.0, 0.0), 0, 1/4   , "cornflowerblue", 30));
+	}
+
+
+}
+
 //
 // PhysicsEngine
 //
 function PhysicsEngine()
 {
 	// For html canvas, axis y is facing "downward".
-	this.gravity = new Vector2D(0, 0.01);
+	this.gravity = new Vector2D(0, 0.0005);
 	this.restitution = 0.8;
 
 	this.rigidBodies = new Array();
@@ -51,7 +84,7 @@ function PhysicsEngine()
 
 	this.populate = function()
 	{
-		createObjs(this.rigidBodies);
+		createScene2(this.rigidBodies);
 	}
 
 	this.update = function(delta)
@@ -98,6 +131,11 @@ function PhysicsEngine()
 				var remove = relV.dotMultiply(contact.normal) + contact.distance/delta;
 				if(remove < 0)
 				{
+					if(rbA.type == rbA.TYPE_CIRCLE)
+						rbA.angVelo = rbA.velocity.crossMultiply(contact.normal)/rbA.radius;
+					if(rbB.type == rbB.TYPE_CIRCLE)
+						rbB.angVelo = rbB.velocity.crossMultiply(contact.normal)/rbB.radius;
+ 
 					// Note, this impulse is a scalar
 					var impulse = remove / (rbA.invMass + rbB.invMass);
 
