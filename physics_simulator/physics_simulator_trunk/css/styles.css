@@ -34,6 +34,7 @@ table {
 	left: 280px;
 	border: 3px dashed #aaa;
 	border-radius: 5px;
+	cursor: crosshair;
 }
 
 .configPanel
@@ -43,12 +44,6 @@ table {
 	-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
 	margin-left: 5px;	
-}
-
-canvas
-{
-	float:left;
-
 }
 
 #dummyEnd

@@ -1,18 +1,20 @@
 // Comment out the following line to turn on debug logging.
 //console.log = function(){}
 
-function RenderEngine(parentId, viewport)
+function RenderEngine(canvasId, viewport)
 {
-	this.parentId = parentId;
+	this.canvasId = canvasId;
 	this.canvasUI = null;
-	this.configPanelUI = null;
+
 	this.inputHandler = null;
 	this.drawFPS = false;
 	this.drawNormal = false;
+
 	var requestAnimationFrame = null;
 	var cancelAnimationFrame = null;
 	var context = null;
 	var looper = null;
+
 	this.physim = null;
 
 	this.initAll = function()
@@ -34,14 +36,7 @@ function RenderEngine(parentId, viewport)
 	this.initUI = function(viewport)
 	{
 		// Create the container element
-		var container = document.createElement("div");
-		document.getElementById(this.parentId).appendChild(container);
-		container.className = "renderContainer";
-
-		this.canvasUI = new CanvasUI(container, viewport);
-		this.configPanelUI = new ConfigPanelUI(container, viewport);
-
-		console.log("Init UI done!");
+		this.canvasUI = new CanvasUI(this.canvasId, viewport);
 	}
 
 	this.initAnimator = function()
@@ -130,10 +125,11 @@ function RenderEngine(parentId, viewport)
 			looper.previousTimestamp = timestamp;
 
 		var delta = timestamp - looper.previousTimestamp;
+		if(delta == 0)
+			delta = 1000/60;
 		looper.previousTimestamp = timestamp;
 
 		that.clearBg();
-
 
 		// Step physics simulator
 		that.physim.update(delta);
@@ -176,18 +172,21 @@ function RenderEngine(parentId, viewport)
 
 	this.start = function()
 	{
-		looper.id = requestAnimationFrame(step);
 		looper.isLoopStarted = true;
 		looper.startFpsCounter();
 
 		console.log("Render loop started.");
+
+		looper.id = requestAnimationFrame(step);
 	}
 
 	this.stop = function()
 	{
 		cancelAnimationFrame(looper.id);
 		looper.isLoopStarted = false;
+		looper.previousTimestamp = null;
 		looper.stopFpsCounter();
+		looper.currentFrameNo = 0;
 
 		console.log("Render loop stopped.");
 	}
@@ -195,4 +194,4 @@ function RenderEngine(parentId, viewport)
 	this.initAll();
 }
 
-var renderEngine = new RenderEngine("simulator_parent", new Viewport(1280, 720, "#ddd"));
+var renderEngine = new RenderEngine("main_canvas", new Viewport(1280, 720, "#ddd"));

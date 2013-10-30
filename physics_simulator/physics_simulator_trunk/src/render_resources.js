@@ -78,6 +78,7 @@ function InputHandler(canvas, sceneObjects)
 
 		this.canvas.onmousedown = function(e)
 		{
+			e.preventDefault();
 			that.isMouseDown = true;
 			var mousePos = that.getRelativeClickPos(e);
 

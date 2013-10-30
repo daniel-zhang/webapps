@@ -25,7 +25,7 @@ function RigidBody(position, velocity, angVelo, invMass, color)
 	this.invInertia = 0;
 	this.color = color;
 
-	this.oldVelocity = velocity;
+	this.oldVelocity = this.velocity;
 }
 RigidBody.prototype.TYPE_BASE = 0;
 RigidBody.prototype.TYPE_CIRCLE = 1;

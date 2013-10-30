@@ -73,20 +73,6 @@
 		<input type="radio" id="draw_polygon" name="mode" /><label for="draw_polygon">Polygon</label>
 	</span>
 
-	<label for="pen_styles">Pen Styles:</label>
-	<select id="pen_styles">
-		<option id="dot">dot</option>
-		<option id="line">line</option>
-		<option id="bezier">bezier</option>
-	</select>
-
-	<label for="canvas_size">Canvas Size</label>
-	<select id="canvas_size">
-		<option id="size_800_600">800x600</option>
-		<option id="size_400_300">400x300</option>
-		<option id="size_1024_768">1024x768</option>
-	</select>
-
 	<label for="contact_solver">Contact Solver</label>
 	<select id="contact_solver">
 		<option id="discrete">Discrete</option>
@@ -101,7 +87,9 @@
 
 </div>
 
-<div id="simulator_parent"></div>
+<div id="simulator_parent" class="renderContainer">
+	<canvas id="main_canvas" width="1200" ></canvas>
+</div>
 
 <script type="text/javascript" src="src/math.js"></script>
 <script type="text/javascript" src="src/rb_base.js"></script>

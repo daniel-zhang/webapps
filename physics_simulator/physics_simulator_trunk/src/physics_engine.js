@@ -57,9 +57,6 @@ function createScene2(rbContainer)
 	rbContainer.push(new Box(new Vector2D(800, 550), new Vector2D(0, 0), 0, 0, "#8B7355", 15, 200, 1.27));
 	rbContainer.push(new Box(new Vector2D(1000, 350), new Vector2D(0, 0), 0, 0, "#53868B", 15, 200, 0.57));
 
-	rbContainer.push(new Box(new Vector2D(200, 350), new Vector2D(0, 0), 0, 1/4, "#53868B", 35, 20, 0.57));
-	rbContainer.push(new Box(new Vector2D(280, 350), new Vector2D(0, 0), 0, 1/4, "#53868B", 25, 40, 0.57));
-
 	for(var i = 0; i < 10; i++)
 	{
 		var posX = 150 + i * 80;
@@ -67,7 +64,7 @@ function createScene2(rbContainer)
 		rbContainer.push(new Circle(new Vector2D(posX, posY1), new Vector2D(0.0, 0.0), 0, 1/4   , "cornflowerblue", 30));
 	}
 
-
+	rbContainer.push(new Circle(new Vector2D(420, 554 ), new Vector2D(0.0, 0.0), 0, 1/4   , "cornflowerblue", 30));
 }
 
 //
@@ -163,7 +160,8 @@ function PhysicsEngine()
 		// Integration...implicit euler integration
 		for(var i = 0; i < this.rigidBodies.length; i++)
 		{
-			this.rigidBodies[i].integrate(delta);
+			if(this.rigidBodies[i].invMass > 0)
+				this.rigidBodies[i].integrate(delta);
 		}
 
 	}

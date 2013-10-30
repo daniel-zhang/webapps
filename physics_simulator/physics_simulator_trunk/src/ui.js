@@ -175,20 +175,38 @@ function ConfigPanelUI(parent_, viewport_)
 	this.init();
 }
 
-function CanvasUI(parent_, viewport_)
+function CanvasUI(id, viewport_)
 {
-	this.parent = parent_;
+	this.eleId = id;
 	this.viewport = viewport_;
 
 	this.canvasElement = null;
+
 	this.init = function()
 	{
-		this.canvasElement = document.createElement("canvas");
-		this.parent.appendChild(this.canvasElement);
-		
-		this.addjustSize(this.viewport.width, this.viewport.height);
-
-		console.log("Canvas UI init done!");
+		this.canvasElement = document.getElementById(id);
+		this.viewport.width = this.canvasElement.width;
+		this.addjustSize(this.viewport.width, this.viewport.width * 9 / 16);
+		var that = this;
+		this.canvasElement.onmousewheel = function(e)
+		{
+			if(e.wheelDelta > 0)
+			{
+				// var width = that.canvasElement.width*1.08*(e.wheelDelta/120);
+				// var height = that.canvasElement.height*1.1*(e.wheelDelta/120);
+				var width = that.canvasElement.width + 30;
+				var height = width * 9 / 16;
+				that.addjustSize(width, height);
+			}
+			else if (e.wheelDelta < 0)
+			{
+				// var width = that.canvasElement.width*0.92*(0-e.wheelDelta/120);
+				var width = that.canvasElement.width - 30;
+				var height = width * 9 / 16;
+				// var height = that.canvasElement.height*0.93*(0-e.wheelDelta/120);
+				that.addjustSize(width, height);
+			}
+		}
 	}
 
 	this.addjustSize = function(width, height)
