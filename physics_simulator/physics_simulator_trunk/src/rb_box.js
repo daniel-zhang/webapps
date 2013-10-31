@@ -75,7 +75,7 @@ Box.prototype.generateContact = function(anotherRb)
 				testVect = testVectB;
  
 			var dist = testVect.dotMultiply(edge.normal);
-			if( dist> 0)
+			if( dist >= 0)
 			{
 				var distV = edge.normal.scalarMultiply(dist);
 				// proj = test - n*(test dot n) = test - distV
@@ -86,8 +86,10 @@ Box.prototype.generateContact = function(anotherRb)
 				if(projection.squareMod() < edgeV.squareMod())
 				{
 					distV.normalize();
-					var contactPointA = circleCenter.add(distV.negate().scalarMultiply(dist));
-					var contactPointB = circleCenter.add(distV.negate().scalarMultiply(anotherRb.radius));
+					// var contactPointA = circleCenter.add(distV.negate().scalarMultiply(dist));
+					// var contactPointB = circleCenter.add(distV.negate().scalarMultiply(anotherRb.radius));
+					var contactPointA = circleCenter.minus(edge.normal.scalarMultiply(dist));
+					var contactPointB = circleCenter.minus(edge.normal.scalarMultiply(anotherRb.radius));
 					contact = new Contact(edge.normal.negate(), dist - anotherRb.radius, this, anotherRb, contactPointA, contactPointB);
 					return contact;
 				}

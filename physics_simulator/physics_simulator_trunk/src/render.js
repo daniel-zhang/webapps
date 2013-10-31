@@ -147,7 +147,8 @@ function RenderEngine(canvasId, viewport)
 		{
 			var pointA = that.physim.contacts[i].contactPointA;
 			var pointB = that.physim.contacts[i].contactPointB;
-			if(pointA != null && pointB != null && pointA.minus(pointB).mod() < 0.2)
+			// if(pointA != null && pointB != null && pointA.minus(pointB).mod() < 0.2)
+			if(pointA != null && pointB != null && pointA.minus(pointB).mod() < 10)
 			{
 				context.beginPath();
 				context.arc(pointA.x, pointA.y, 3, 0, 2*Math.PI);
