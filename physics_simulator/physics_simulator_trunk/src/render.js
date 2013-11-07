@@ -1,6 +1,6 @@
 // Comment out the following line to turn on debug logging.
 //console.log = function(){}
-
+var debugCtx;
 function RenderEngine(canvasId, viewport)
 {
 	this.canvasId = canvasId;
@@ -53,6 +53,7 @@ function RenderEngine(canvasId, viewport)
 			window.webkitCancelAnimationFrame;
 
 		context = this.canvasUI.canvasElement.getContext("2d");
+		debugCtx = context;
 	}
 
 	this.registerEventListeners = function()
@@ -148,17 +149,24 @@ function RenderEngine(canvasId, viewport)
 			var pointA = that.physim.contacts[i].contactPointA;
 			var pointB = that.physim.contacts[i].contactPointB;
 			// if(pointA != null && pointB != null && pointA.minus(pointB).mod() < 0.2)
-			if(pointA != null && pointB != null && pointA.minus(pointB).mod() < 10)
+			// if(pointA != null && pointB != null && pointA.minus(pointB).mod() < 10)
+			if(pointA != null && pointB != null)
 			{
 				context.beginPath();
-				context.arc(pointA.x, pointA.y, 3, 0, 2*Math.PI);
+				context.arc(pointA.x, pointA.y, 2, 0, 2*Math.PI);
 				context.fillStyle = "#483D8B";
 				context.fill();
 
 				context.beginPath();
-				context.arc(pointB.x, pointB.y, 3, 0, 2*Math.PI);
+				context.arc(pointB.x, pointB.y, 2, 0, 2*Math.PI);
 				context.fillStyle = "#483D8B";
 				context.fill();
+
+				context.beginPath();
+				context.moveTo(pointA.x, pointA.y);
+				context.lineTo(pointB.x, pointB.y);
+				context.strokeStyle = "#483D8B";
+				context.stroke();
 			}
 		}
 

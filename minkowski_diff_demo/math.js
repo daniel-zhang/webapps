@@ -26,7 +26,7 @@ Position.prototype.distance = function(that)
 	var deltaY = (this.y - that.y) * (this.y - that.y);
 	return Math.sqrt(deltaY + deltaX);
 }
-
+ 
 //
 // 2D vector
 //
@@ -35,25 +35,25 @@ function Vector2D(x, y)
 	this.x = x;
 	this.y = y;
 }
-
+ 
 Vector2D.prototype.makeZero = function()
 {
 	this.x = 0;
 	this.y = 0;	
 }
-
+ 
 Vector2D.prototype.negate = function()
 {
 	this.x = 0 - this.x;
 	this.y = 0 - this.y;
 	return this;
 }
-
+ 
 Vector2D.prototype.duplicate = function()
 {
 	return new Vector2D(this.x, this.y);
 }
-
+ 
 Vector2D.prototype.equal = function(that)
 {
 	if(this.x == that.x && this.y == that.y)
@@ -61,67 +61,65 @@ Vector2D.prototype.equal = function(that)
 	else
 		return false;
 }
-Vector2D.prototype.equalZero = function()
-{
-	if(this.x == 0 && this.y == 0)
-		return true;
-	else
-		return false;
-}
-
+ 
 Vector2D.prototype.add = function(that)
 {
 	return new Vector2D(this.x + that.x, this.y + that.y);
 }
-
+ 
 Vector2D.prototype.addSelf = function(that)
 {
 	this.x += that.x;
 	this.y += that.y;
 	return this;
 }
-
+ 
 Vector2D.prototype.minus = function(that)
 {
 	return new Vector2D(this.x - that.x, this.y - that.y);
 }
-
+ 
 Vector2D.prototype.minusSelf = function(that)
 {
 	this.x -= that.x;
 	this.y -= that.y;
 	return this;
 }
-
+ 
 Vector2D.prototype.scalarMultiply = function(scalar)
 {
 	return new Vector2D(this.x * scalar, this.y * scalar);
 }
-
+ 
 Vector2D.prototype.scalarMulSelf = function(scalar)
 {
 	this.x = this.x * scalar;
 	this.y = this.y * scalar;
 	return this;
 }
-
+ 
 Vector2D.prototype.scalarDivide = function(scalar)
 {
 	return new Vector2D(this.x / scalar, this.y / scalar);
 }
-
+ 
 Vector2D.prototype.scalarDivSelf = function(scalar)
 {
 	this.x = this.x / scalar;
 	this.y = this.y / scalar;
 	return this;
 }
-
+ 
+Vector2D.prototype.dot = function(that)
+{
+	return this.x * that.x + this.y * that.y;
+}
+ 
 Vector2D.prototype.dotMultiply = function(that)
 {
 	return	this.x*that.x + this.y* that.y;
 }
-
+ 
 // Used to determin normal direction of a 'plane', so it's actually a simplified version of cross muliplication.
 // Right-handed.
 // Usage: 
@@ -132,17 +130,17 @@ Vector2D.prototype.crossMultiply = function(that)
 {
 	return this.x * that.y - this.y * that.x;
 }
-
+ 
 Vector2D.prototype.mod = function()
 {
 	return Math.sqrt(this.x * this.x + this.y * this.y);
 }
-
+ 
 Vector2D.prototype.squareMod = function()
 {
 	return (this.x * this.x + this.y * this.y);
 }
-
+ 
 Vector2D.prototype.normalize = function()
 {
 	var mod = this.mod();
@@ -150,12 +148,12 @@ Vector2D.prototype.normalize = function()
 	this.y = this.y / mod;
 	return this;
 }
-
+ 
 Vector2D.prototype.turn90 = function()
 {
 	return new Vector2D(0 - this.y, this.x);
 }
-
+ 
 Vector2D.prototype.rotate = function(theta)
 {
 	var tmpX = this.x * Math.cos(theta) - this.y * Math.sin(theta);
@@ -163,4 +161,30 @@ Vector2D.prototype.rotate = function(theta)
 	this.x = tmpX;
 	this.y = tmpY;
 	return this;
+}
+Vector2D.prototype.equal = function(that)
+{
+	if(this.x == that.x && this.y == that.y)
+		return true;
+	else
+		return false;
+}
+Vector2D.prototype.squaredDistance = function(that)
+{
+	var dx = this.x - that.x;
+	var dy = this.y - that.y;
+	return dx*dx + dy*dy;
+}
+ 
+Vector2D.prototype.getMid = function(that)
+{
+	return new Vector2D((this.x + that.x)/2, (this.y + that.y)/2);
+}
+ 
+Vector2D.prototype.isZero = function()
+{
+	if(this.x == 0 && this.y == 0)
+		return true;
+	else
+		return false;
 }

@@ -57,6 +57,8 @@ function createScene2(rbContainer)
 	rbContainer.push(new Box(new Vector2D(800, 550), new Vector2D(0, 0), 0, 0, "#8B7355", 15, 200, 1.27));
 	rbContainer.push(new Box(new Vector2D(1000, 350), new Vector2D(0, 0), 0, 0, "#53868B", 15, 200, 0.57));
 
+	rbContainer.push(new Box(new Vector2D(300, 350), new Vector2D(0, 0), 0, 1/4, "#53868B", 35, 20, 0.57));
+
 	for(var i = 0; i < 10; i++)
 	{
 		var posX = 150 + i * 80;
@@ -67,6 +69,11 @@ function createScene2(rbContainer)
 	rbContainer.push(new Circle(new Vector2D(420, 554 ), new Vector2D(0.0, 0.0), 0, 1/4   , "cornflowerblue", 30));
 }
 
+function createScene3(rbContainer)
+{
+	rbContainer.push(new Box(new Vector2D(420, 500), new Vector2D(0, 0), 0, 0, "#8B2323", 300, 15, 0.1));
+	rbContainer.push(new Box(new Vector2D(780, 150), new Vector2D(0, 0), 0, 1/40, "#53868B", 35, 20, 0.57));
+}
 //
 // PhysicsEngine
 //
@@ -74,6 +81,7 @@ function PhysicsEngine()
 {
 	// For html canvas, axis y is facing "downward".
 	this.gravity = new Vector2D(0, 0.0005);
+	// this.gravity = new Vector2D(0, 0);
 	this.restitution = 0.8;
 
 	this.rigidBodies = new Array();
@@ -81,7 +89,7 @@ function PhysicsEngine()
 
 	this.populate = function()
 	{
-		createScene2(this.rigidBodies);
+		createScene3(this.rigidBodies);
 	}
 
 	this.update = function(delta)
@@ -107,7 +115,16 @@ function PhysicsEngine()
 				// Do not detect collision between two invMass==0 rbs, i.e. two planes.
 				if( this.rigidBodies[i].invMass > 0 || this.rigidBodies[j].invMass > 0)
 				{
-					this.contacts.push(this.rigidBodies[i].generateContact(this.rigidBodies[j]));
+					var generatedContacts = this.rigidBodies[i].generateContact(this.rigidBodies[j]);
+					if(Array.isArray(generatedContacts))
+					{
+						for(var k = 0; k < generatedContacts.length; k++)
+							this.contacts.push(generatedContacts[k]);
+					}
+					else
+					{
+						this.contacts.push(generatedContacts);
+					}
 				}
 			}
 		}

@@ -935,6 +935,71 @@ function CollisionDetector()
 		
 	}
 }
+function edgeVerticesPair(edge, vertices)
+{
+	this.edge = edge;
+	this.vertices = vertices;
+	this.dist = function()
+	{
+		var distFromEdgeToOrigin = this.edge.dist();
+		var distFromSupportVertexToOrigin = this.vertices[0].dotMultiply(this.edge.normal);
+		var distFromSupportVertexToEdge = distFromEdgeToOrigin + distFromSupportVertexToOrigin;
+		return distFromSupportVertexToEdge;
+	}
+}
+
+function boxContact()
+{
+	this.findSupportVertices = function(normal, vertices)
+	{
+		var supportVertices = new Array();
+		var minProj = Number.MAX_VALUE; 
+
+		for(var i = 0; i < vertices.length; i++)
+		{
+			var projection = normal.dotMultiply(vertices[i]);
+			if(minProj > projection)
+			{
+				minProj = projection;
+				supportVertices.length = 0;
+				supportVertices.push(vertices[i]);
+			}
+			else if(minProj == projection)
+			{
+				supportVertices.push(vertices[i]);
+			}
+		}
+		return supportVertices;
+	}
+	this.findEdgeVertexPair = function(edges, vertices)
+	{
+		var minDist = Number.MAX_VALUE;
+		var targetPair = null;
+		for(var i = 0; i < edges.length; i++)
+		{
+			var supportVertices = findSupportVertices(edges[i].normal, vertices);
+			var evPair = new edgeVerticesPair(edges[i], supportVertices);
+			if(minDist > evPair.dist())
+			{
+				minDist = evPair.dist();
+				targetPair = evPair;
+			}
+		}
+		return targetPair;
+	}
+	this.findMDifference = function(objA, objB)
+	{
+		var pair1 = findEdgeVertexPair(objA.edges, objB.vertices);
+		var pair2 = findEdgeVertexPair(objB.edges, objA.vertices);
+		var minPair;
+		if(pair1.dist() < pair2.dist())
+			minPair = pair1;
+		else
+			minPair = pair2;
+
+		return minPair;
+	}
+}
 
 function MinkowskiSpace()
 {
