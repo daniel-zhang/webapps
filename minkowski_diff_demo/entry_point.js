@@ -30,21 +30,32 @@ function clearCanvas(color)
 var projector = new Projector();
  
 var triangleA = new Array();
-triangleA.push(new Vector2D(200, 300));
-triangleA.push(new Vector2D(400, 500));
-triangleA.push(new Vector2D(600, 200));
+triangleA.push(new Vector2D(100, 300));
+triangleA.push(new Vector2D(300, 500));
+triangleA.push(new Vector2D(400, 200));
 var polygonA = new Polygon(triangleA);
+
+var triangleB = new Array();
+triangleB.push(new Vector2D(500, 200));
+triangleB.push(new Vector2D(550, 400));
+triangleB.push(new Vector2D(600, 200));
+var polygonB = new Polygon(triangleB);
  
 function render(mousePos)
 {
 	clearCanvas();
  
 	polygonA.drawSelf(ctx);
+	polygonB.drawSelf(ctx);
  
-	for(var i = 0; i < polygonA.edges.length; i++)
+	// for(var i = 0; i < polygonA.edges.length; i++)
+	// {
+	// 	projector.projectPointOntoEdge(mousePos, polygonA.edges[i]);
+	// 	projector.drawSelf(ctx);
+	// }
+	var evPairs = MinkowskiDiff(polygonA, polygonB);
+	for(var i = 0; i < evPairs.pairs1.length; i++)
 	{
-		projector.projectPointOntoEdge(mousePos, polygonA.edges[i]);
-		projector.drawSelf(ctx);
+		evPairs.pairs1[i].drawSelf(ctx);
 	}
- 
 }
