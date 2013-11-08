@@ -5,14 +5,16 @@ function Edge(startPos, endPos)
  
 	this.startPos = startPos;
 	this.endPos = endPos;
-	this.mid = startPos.add(endPos).scalarMultiply(0.5);
+	this.mid = null; 
 	this.normal = null;
  
-	this.updateNormal();
-	if(this.normal == null)
-		throw "Failed to calculate normal for Edge: " + startPos + ", " + endPos;
+	this.update();
 }
-Edge.prototype.updateNormal = function() { this.normal = (new Vector2D(this.startPos.y - this.endPos.y, this.endPos.x - this.startPos.x)).normalize();}
+Edge.prototype.update = function() 
+{ 
+	this.normal = (new Vector2D(this.startPos.y - this.endPos.y, this.endPos.x - this.startPos.x)).normalize();
+	this.mid = this.startPos.add(this.endPos).scalarMultiply(0.5);
+}
 Edge.prototype.squareLen = function(){ return this.endPos.minus(this.startPos).squareMod();}
 Edge.prototype.len = function() { return this.endPos.minus(this.startPos).mod(); }
  
@@ -36,10 +38,11 @@ Edge.prototype.drawSelf = function(ctx, color)
 }
  
  
-function Polygon(vertices)
+function Polygon(vertices, color)
 {
 	this.vertices = vertices;
 	this.edges = new Array();
+	this.color = color;
  
 	this.init();
 }
@@ -51,11 +54,35 @@ Polygon.prototype.init = function()
 		this.edges.push(new Edge(this.vertices[i], this.vertices[(i + 1) % numOfVertices]));
 	}
 }
+
+Polygon.prototype.translate = function(movement)
+{
+	for(var i = 0; i < this.vertices.length; i++)
+	{
+		this.vertices[i].addSelf(movement);
+	}
+	for(var i = 0; i < this.edges.length; i++)
+	{
+		this.edges[i].update();
+	}
+}
  
-Polygon.prototype.drawSelf = function(ctx, color)
+Polygon.prototype.drawSelf = function(ctx)
 {
 	for(var i = 0; i < this.edges.length; i++)
 	{
-		this.edges[i].drawSelf(ctx, color);
+		this.edges[i].drawSelf(ctx, this.color);
 	}
+}
+
+Polygon.prototype.isClicked = function(pos)
+{
+	for(var i = 0; i < this.vertices.length; i++)
+	{
+		var testV = pos.minus(this.vertices[i]);
+		var edge = new Edge(this.vertices[i], this.vertices[(i + 1) % this.vertices.length]);
+		if(testV.dotMultiply(edge.normal) >= 0)
+			return false;
+	}
+	return true;
 }

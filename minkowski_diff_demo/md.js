@@ -53,12 +53,13 @@ Projector.prototype.projectPointOntoEdge = function(point, edge)
 	{
 		this.projectedPoint = shortVectorEndPoint;
 		this.projectionDistVector = shortVector;
-		this.projectionDistance = shortVector.mod();
+		this.projectionDistance = signedDistance > 0 ? shortVector.mod() : 0 - shortVector.mod();
 	}
 }
 Projector.prototype.drawSelf = function(ctx, color)
 {
 	var clr = color || "black";
+
 	// Draw projection
 	ctx.beginPath();
 	ctx.moveTo(this.point.x, this.point.y);
@@ -66,7 +67,7 @@ Projector.prototype.drawSelf = function(ctx, color)
 	ctx.strokeStyle = clr;
 	ctx.stroke();
  
-	//Draw projection distance
+	//Draw projection distance text
 	var midPoint = this.point.add(this.projectedPoint).scalarMultiply(0.5);
 	var distText = this.projectionDistance.toFixed(2);
 	ctx.font = "bold 13px consola";
@@ -79,20 +80,32 @@ function EdgeVerticesPair(edge, vertices, color)
 	this.projectors = new Array();
 	this.edge = edge;
 	this.vertices = vertices;
+	this.projDist = Number.MAX_VALUE;
 	this.color = color;
 
 	for(var i = 0; i < this.vertices.length; i++)
 	{
 		var projector = new Projector();
 		projector.projectPointOntoEdge(this.vertices[i], this.edge);
+		if(projector.projectionDistance >= 0)
+		{
+			if(this.projDist > projector.projectionDistance)
+				this.projDist = projector.projectionDistance;
+		}
+		else 
+		{
+			if(this.projDist > 0 - projector.projectionDistance)
+				this.projDist = projector.projectionDistance;
+		}
 		this.projectors.push(projector);
 	}
 }
-EdgeVerticesPair.prototype.drawSelf = function(ctx)
+EdgeVerticesPair.prototype.drawSelf = function(ctx, color)
 {
+	var clr = color || this.color;
 	for(var i = 0; i < this.projectors.length; i++)
 	{
-		this.projectors[i].drawSelf(ctx, this.color);
+		this.projectors[i].drawSelf(ctx, clr);
 	}
 }
 
@@ -125,7 +138,7 @@ function MinkowskiDiff(polygonA, polygonB)
 	{
 		var curEdge = polygonA.edges[i];
 		var supportVertices = findSupportVertices(curEdge.normal, polygonB.vertices);
-		var evPair = new EdgeVerticesPair(curEdge, supportVertices, "green"); 
+		var evPair = new EdgeVerticesPair(curEdge, supportVertices, polygonA.color); 
 		evPairs_A_B.push(evPair);
 	}
 	var evPairs_B_A = new Array();
@@ -133,7 +146,7 @@ function MinkowskiDiff(polygonA, polygonB)
 	{
 		var curEdge = polygonB.edges[i];
 		var supportVertices = findSupportVertices(curEdge.normal, polygonA.vertices);
-		var evPair = new EdgeVerticesPair(curEdge, supportVertices, "yellow");
+		var evPair = new EdgeVerticesPair(curEdge, supportVertices, polygonB.color);
 		evPairs_B_A.push(evPair);
 	}
 	return {pairs1:evPairs_A_B, pairs2:evPairs_B_A};
