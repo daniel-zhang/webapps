@@ -26,7 +26,11 @@ Edge.prototype.drawSelf = function(ctx, color)
 	ctx.moveTo(this.startPos.x, this.startPos.y);
 	ctx.lineTo(this.endPos.x, this.endPos.y);
 	ctx.strokeStyle = clr;
+	var tmp = ctx.lineWidth;
+	ctx.lineWidth = 2;
 	ctx.stroke();
+	ctx.lineWidth = tmp;
+
 	// Draw normal
 	var normalStart = this.mid;
 	var normalEnd = this.mid.add(this.normal.scalarMultiply(20));
@@ -55,12 +59,43 @@ Polygon.prototype.init = function()
 	}
 }
 
+Polygon.prototype.getCenter = function()
+{
+	var sum = this.vertices[0].duplicate();
+	for(var i = 1; i < this.vertices.length; i++)
+	{
+		sum.addSelf(this.vertices[i]);
+	}
+	return sum.scalarDivide(this.vertices.length);
+}
+
 Polygon.prototype.translate = function(movement)
 {
 	for(var i = 0; i < this.vertices.length; i++)
 	{
 		this.vertices[i].addSelf(movement);
 	}
+	for(var i = 0; i < this.edges.length; i++)
+	{
+		this.edges[i].update();
+	}
+}
+
+Polygon.prototype.rotate = function(rotation)
+{
+	var rotationCenter = this.getCenter(); 
+
+	for( var i = 0; i < this.vertices.length; i++)
+	{
+		// Translate rotationCenter to origin
+		this.vertices[i].minusSelf(rotationCenter);
+		// Rotate around rotationCenter
+		this.vertices[i].rotate(rotation);
+		// Translate back to where it is
+		this.vertices[i].addSelf(rotationCenter);
+	}
+
+	// Update edges from vertices
 	for(var i = 0; i < this.edges.length; i++)
 	{
 		this.edges[i].update();

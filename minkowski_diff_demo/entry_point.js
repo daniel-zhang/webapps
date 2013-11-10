@@ -27,6 +27,12 @@ function getMousePos(e, obj)
 var isMouseDown = false;
 var selected = null;
 var oldPos = null;
+
+var mode = mode_null;
+var mode_translate = 0;
+var mode_rotate = 1;
+var mode_null = 2;
+
 canvas.onmousedown = function(e)
 {
 	isMouseDown = true;
@@ -36,6 +42,11 @@ canvas.onmousedown = function(e)
 	{
 		if(shapes[i].isClicked(mousePos) == true)
 		{
+			if(e.ctrlKey)
+				mode = mode_rotate;
+			else
+				mode = mode_translate;
+
 			selected = shapes[i];
 			oldPos = mousePos;
 			return;
@@ -48,6 +59,7 @@ canvas.onmouseup = function(e)
 	isMouseDown = false;
 	selected = null;
 	oldPos = null;
+	mode = mode_null;
 }
  
 canvas.onmousemove = function(e)
@@ -55,9 +67,26 @@ canvas.onmousemove = function(e)
 	var mousePos = getMousePos(e, canvas);
 	if(isMouseDown && selected != null)
 	{
+		// Calculate movement
 		var movement = mousePos.minus(oldPos);
+
+		// Calculate rotation
+		var center = selected.getCenter();
+		var v0 = center.minus(oldPos);
+		var v1 = center.minus(mousePos);
+		var rotation = Math.acos(v1.normalize().dotMultiply(v0.normalize()));
+		if(v1.crossMultiply(v0) > 0)
+			rotation = 0 - rotation;
 		oldPos = mousePos;
-		selected.translate(movement);
+
+		if(mode == mode_translate)
+		{
+			selected.translate(movement);
+		}
+		else if(mode == mode_rotate)
+		{
+			selected.rotate(rotation);
+		}
 	}
 	render();
 }
@@ -77,52 +106,60 @@ function render()
 	{
 		shapes[i].drawSelf(ctx);
 	}
-
-	var evPairs = MinkowskiDiff(shapes[0], shapes[1]);
-	for(var i = 0; i < evPairs.pairs1.length; i++)
+	var contacts = MinkowskiDiff2(shapes[0], shapes[1]);
+	for(var i = 0; i < contacts.length; i ++)
 	{
-		evPairs.pairs1[i].drawSelf(ctx);
-	}
-	for(var i = 0; i < evPairs.pairs2.length; i++)
-	{
-		evPairs.pairs2[i].drawSelf(ctx);
-	}
-
-	var evp = evPairs.pairs1.concat(evPairs.pairs2);
-	var minPosDist = Number.MAX_VALUE;
-	var maxNegDist = 0 - Number.MAX_VALUE;
-	var targetPosPairIndex = null;
-	var targetNegPairIndex = null;
-	for(var i = 0; i < evp.length; i++)
-	{
-		var dist = evp[i].projDist;
-		if(dist >= 0)
-		{
-			if(minPosDist > dist)
-			{
-				minPosDist = dist;
-				targetPosPairIndex = i;
-			}
-		}
+		if(contacts[i].distance > 0)
+			contacts[i].drawSelf(ctx, "blue");
 		else
-		{
-			if(maxNegDist < dist)
-			{
-				maxNegDist = dist;
-				targetNegPairIndex = i;
-			}
-		}
+			contacts[i].drawSelf(ctx, "red");
 	}
-	if(targetPosPairIndex != null)
-	{
-		if(targetPosPairIndex < evp.length/2)
-			evp[evptargetPosPairIndex].drawSelf(ctx, "blue", "A", "B");
-		else
-			evp[evptargetPosPairIndex].drawSelf(ctx, "blue", "B", "A");
-	}
-	else
-	{
-		evp[targetNegPairIndex].drawSelf(ctx, "red");
 
-	}
+	// var evPairs = MinkowskiDiff(shapes[0], shapes[1]);
+	// for(var i = 0; i < evPairs.pairs1.length; i++)
+	// {
+	// 	evPairs.pairs1[i].drawSelf(ctx);
+	// }
+	// for(var i = 0; i < evPairs.pairs2.length; i++)
+	// {
+	// 	evPairs.pairs2[i].drawSelf(ctx);
+	// }
+
+	// var evp = evPairs.pairs1.concat(evPairs.pairs2);
+	// var minPosDist = Number.MAX_VALUE;
+	// var maxNegDist = 0 - Number.MAX_VALUE;
+	// var targetPosPairIndex = null;
+	// var targetNegPairIndex = null;
+	// for(var i = 0; i < evp.length; i++)
+	// {
+	// 	var dist = evp[i].projDist;
+	// 	if(dist >= 0)
+	// 	{
+	// 		if(minPosDist > dist)
+	// 		{
+	// 			minPosDist = dist;
+	// 			targetPosPairIndex = i;
+	// 		}
+	// 	}
+	// 	else
+	// 	{
+	// 		if(maxNegDist < dist)
+	// 		{
+	// 			maxNegDist = dist;
+	// 			targetNegPairIndex = i;
+	// 		}
+	// 	}
+	// }
+	// if(targetPosPairIndex != null)
+	// {
+	// 	if(targetPosPairIndex < evp.length/2)
+	// 		evp[targetPosPairIndex].drawSelf(ctx, "blue", "A", "B");
+	// 	else
+	// 		evp[targetPosPairIndex].drawSelf(ctx, "blue", "B", "A");
+	// }
+	// else
+	// {
+	// 	evp[targetNegPairIndex].drawSelf(ctx, "red");
+
+	// }
 }
