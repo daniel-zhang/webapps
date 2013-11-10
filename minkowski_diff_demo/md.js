@@ -123,10 +123,10 @@ function findSupportVertices(direction, vertices)
 			result.length = 0;
 			result.push(vertex);
 		}
-		else if(minProj == proj)
-		{
-			result.push(vertex);
-		}
+		// else if(minProj == proj)
+		// {
+		// 	result.push(vertex);
+		// }
 		else if(Math.abs(minProj - proj) < 1)
 		{
 			console.log(minProj + " : " + proj);
@@ -179,8 +179,9 @@ function MinkowskiDiff2(polygonA, polygonB)
 			var supportVertex = supportVertices[j];
 			var contactPairAB = new ContactPair(curEdge, supportVertex);
 
-			if(contactPairAB.distance > 0)
-				contactPairAB.drawSelf(ctx);
+			// Debug draw
+			// if(contactPairAB.distance > 0)
+			 contactPairAB.drawSelf(ctx, "blue");
 
 			// Trace minimal positive pair
 			if(contactPairAB.distance >= 0)
@@ -217,8 +218,9 @@ function MinkowskiDiff2(polygonA, polygonB)
 			var supportVertex = supportVertices[j];
 			var contactPairBA = new ContactPair(curEdge, supportVertex);
 
-			if(contactPairBA.distance > 0)
-				contactPairBA.drawSelf(ctx);
+			// Debug draw
+			// if(contactPairBA.distance > 0)
+			contactPairBA.drawSelf(ctx, "red");
 
 			// Trace minimal positive pair
 			if(contactPairBA.distance >= 0)
@@ -244,7 +246,8 @@ function MinkowskiDiff2(polygonA, polygonB)
 	var result = new Array();
 	if(minPosPairAB != null && minPosPairBA != null)
 	{
-		if(minPosPairAB.distance == minPosPairBA.distance)
+		// if(minPosPairAB.distance == minPosPairBA.distance)
+		if(Math.abs(minPosPairAB.distance - minPosPairBA.distance) < 1)
 		{
 			result.push(minPosPairAB);
 			result.push(minPosPairBA.flip());
@@ -269,7 +272,8 @@ function MinkowskiDiff2(polygonA, polygonB)
 	}
 	else
 	{
-		if(maxNegPairAB.distance == maxNegPairBA.distance)
+		// if(maxNegPairAB.distance == maxNegPairBA.distance)
+		if(Math.abs(maxNegPairAB.distance - maxNegPairBA.distance) < 1)
 		{
 			result.push(maxNegPairAB);
 			result.push(maxNegPairBA.flip());

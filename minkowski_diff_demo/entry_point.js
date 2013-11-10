@@ -5,9 +5,9 @@ canvas.style.cursor = "crosshair";
 var shapes = new Array();
 
 var triangleA = new Array();
-triangleA.push(new Vector2D(100, 300));
-triangleA.push(new Vector2D(300, 500));
-triangleA.push(new Vector2D(400, 200));
+triangleA.push(new Vector2D(200, 100));
+triangleA.push(new Vector2D(500, 100));
+triangleA.push(new Vector2D(300, 10));
 
 var triangleB = new Array();
 triangleB.push(new Vector2D(500, 200));
@@ -107,13 +107,24 @@ function render()
 		shapes[i].drawSelf(ctx);
 	}
 	var contacts = MinkowskiDiff2(shapes[0], shapes[1]);
-	for(var i = 0; i < contacts.length; i ++)
-	{
-		if(contacts[i].distance > 0)
-			contacts[i].drawSelf(ctx, "blue");
-		else
-			contacts[i].drawSelf(ctx, "red");
-	}
+	// if(contacts.length == 1)
+	// {
+	// 	contacts[0].drawSelf(ctx, "blue");
+	// }
+	// else if(contacts.length == 2)
+	// {
+	// 	contacts[0].drawSelf(ctx, "blue");
+	// 	contacts[1].drawSelf(ctx, "red");
+	// }
+	// else
+	// 	console.log("invalid contacts found!");
+	// for(var i = 0; i < contacts.length; i ++)
+	// {
+	// 	if(contacts[i].distance > 0)
+	// 		contacts[i].drawSelf(ctx, "blue");
+	// 	else
+	// 		contacts[i].drawSelf(ctx, "red");
+	// }
 
 	// var evPairs = MinkowskiDiff(shapes[0], shapes[1]);
 	// for(var i = 0; i < evPairs.pairs1.length; i++)
