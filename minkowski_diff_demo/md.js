@@ -1,3 +1,4 @@
+var FLOATING_ERROR = 0.2;
 function Projector()
 {
 	this.point;
@@ -127,7 +128,7 @@ function findSupportVertices(direction, vertices)
 		// {
 		// 	result.push(vertex);
 		// }
-		else if(Math.abs(minProj - proj) < 1)
+		else if(Math.abs(minProj - proj) < FLOATING_ERROR)
 		{
 			console.log(minProj + " : " + proj);
 			result.push(vertex);
@@ -290,6 +291,109 @@ function MinkowskiDiff2(polygonA, polygonB)
 	return result;
 }
  
+function MinkowskiDiff3(polygonA, polygonB)
+{
+	var minPosDist = Number.MAX_VALUE;
+	var maxNegDist = 0 - Number.MAX_VALUE;
+	var minPosPairs = new Array();
+	var maxNegPairs = new Array();
+
+	// Edges from A, vertices from B:
+	for(var i = 0; i < polygonA.edges.length; i++)
+	{
+		var curEdge = polygonA.edges[i];
+		var supportVertices = findSupportVertices(curEdge.normal, polygonB.vertices);
+		for(var j = 0; j < supportVertices.length; j++)
+		{
+			var supportVertex = supportVertices[j];
+			var contactPairAB = new ContactPair(curEdge, supportVertex);
+
+			// Trace min positive distance
+			if(contactPairAB.distance >= 0)
+			{
+				if(minPosDist > contactPairAB.distance)
+				{
+					minPosDist = contactPairAB.distance;
+					minPosPairs.length = 0;
+					minPosPairs.push(contactPairAB);
+				}
+				else if(Math.abs(minPosDist - contactPairAB.distance) < FLOATING_ERROR)
+				{
+					minPosPairs.push(contactPairAB);
+				}
+			}
+			// Trace max negative distance
+			else
+			{
+				if(maxNegDist < contactPairAB.distance)
+				{
+					maxNegDist = contactPairAB.distance;
+					maxNegPairs.length = 0;
+					maxNegPairs.push(contactPairAB);
+				}
+				else if(Math.abs(maxNegDist - contactPairAB.distance) < FLOATING_ERROR)
+				{
+					maxNegPairs.push(contactPairAB);
+				}
+			}
+		}
+	}
+	// Edges from B, vertices from A:
+	for(var i = 0; i < polygonB.edges.length; i++)
+	{
+		var curEdge = polygonB.edges[i];
+		var supportVertices = findSupportVertices(curEdge.normal, polygonA.vertices);
+		for(var j = 0; j < supportVertices.length; j++)
+		{
+			var supportVertex = supportVertices[j];
+			var contactPairBA = new ContactPair(curEdge, supportVertex);
+
+			// Trace min positive distance
+			if(contactPairBA.distance >= 0)
+			{
+				if(minPosDist > contactPairBA.distance)
+				{
+					minPosDist = contactPairBA.distance;
+					minPosPairs.length = 0;
+					minPosPairs.push(contactPairBA.flip());
+
+				}
+				else if(Math.abs(minPosDist - contactPairBA.distance) < FLOATING_ERROR)
+				{
+					minPosPairs.push(contactPairBA.flip());
+				}
+			}
+			// Trace max negative distance
+			else
+			{
+				if(maxNegDist < contactPairBA.distance)
+				{
+					maxNegDist = contactPairBA.distance;
+					maxNegPairs.length = 0;
+					maxNegPairs.push(contactPairBA.flip());
+				}
+				else if(Math.abs(maxNegDist - contactPairBA.distance) < FLOATING_ERROR)
+				{
+					maxNegPairs.push(contactPairBA.flip());
+				}
+			}
+		}
+	}
+	if(minPosPairs.length != 0)
+	{
+		if(minPosPairs.length == 3) minPosPairs.length = 2;
+		return minPosPairs;
+	}
+	else if(maxNegPairs.length != 0)
+	{
+		if(maxNegPairs.length == 3) maxNegPairs.length = 2;
+		return maxNegPairs;
+	}
+	else
+	{
+		console.log("MINKOWSKI DIFF ERROR!");
+	}
+}
 function MinkowskiDiff(polygonA, polygonB)
 {
 	var evPairs_A_B = new Array();

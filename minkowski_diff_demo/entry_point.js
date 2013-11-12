@@ -106,7 +106,16 @@ function render()
 	{
 		shapes[i].drawSelf(ctx);
 	}
-	var contacts = MinkowskiDiff2(shapes[0], shapes[1]);
+	// var contacts = MinkowskiDiff2(shapes[0], shapes[1]);
+	var contacts = MinkowskiDiff3(shapes[0], shapes[1]);
+	for(var i = 0; i < contacts.length; i++)
+	{
+		if(contacts[i].distance > 0)
+			contacts[i].drawSelf(ctx, "blue");
+		else
+			contacts[i].drawSelf(ctx, "red");
+	}
+
 	// if(contacts.length == 1)
 	// {
 	// 	contacts[0].drawSelf(ctx, "blue");
