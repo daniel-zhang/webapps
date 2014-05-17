@@ -89,7 +89,7 @@ function PhysicsEngine()
 
 	this.populate = function()
 	{
-		createScene3(this.rigidBodies);
+		createScene2(this.rigidBodies);
 	}
 
 	this.update = function(delta)
