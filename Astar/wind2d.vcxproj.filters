@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{87052a8e-bb73-472c-bd89-653953474d55}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="basewindow.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="configwindow.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="datamodel.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="renderwindow.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="wind2d.VC.db">
+      <Filter>src</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="basewindow.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="configwindow.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="datamodel.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="renderwindow.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="winroot.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="ipq.h">
+      <Filter>src</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
